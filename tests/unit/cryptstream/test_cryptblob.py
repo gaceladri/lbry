@@ -22,6 +22,9 @@ class MocBlob(object):
         write_func(data)
         return defer.succeed(True)
 
+    def open_for_reading(self):
+        return StringIO.StringIO(self.data)
+
     def write(self, data):
         self.data += data
 
@@ -67,7 +70,7 @@ class TestCryptBlob(unittest.TestCase):
 
         # decrypt string
         decryptor = CryptBlob.StreamBlobDecryptor(blob, key, iv, size_of_data)
-        decryptor.decrypt(write_func)
+        yield decryptor.decrypt(write_func)
         self.assertEqual(self.data_buf,string_to_encrypt)
 
     @defer.inlineCallbacks
